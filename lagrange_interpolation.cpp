@@ -42,6 +42,30 @@ void load_data(string file_name, vector<double>& x_points, vector<double>& y_poi
     }
 }
 
+double min(vector<double> x)
+{
+    double result = x[0];
+    for (unsigned int i=1; i<x.size(); ++i)
+    {
+        if (x[i] < result)
+        {
+            result = x[i];
+        }
+    }
+    return result;
+}
+double max(vector<double> x)
+{
+    double result = x[0];
+    for (unsigned int i=1; i<x.size(); ++i)
+    {
+        if (x[i] > result)
+        {
+            result = x[i];
+        }
+    }
+    return result;
+}
 int main(int argc, char** argv)
 {
     cout << setiosflags(ios::fixed) << setprecision(12) << endl;
@@ -72,5 +96,7 @@ int main(int argc, char** argv)
     {
         fit_file << x[i] << "\t" << y[i] << endl;
     }
-               
+    
+    cout << "min, max" << endl;
+    cout << min(xi) << "\t" << max(xi) << endl;
 }
