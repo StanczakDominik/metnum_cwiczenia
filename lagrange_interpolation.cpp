@@ -77,12 +77,10 @@ int main(int argc, char** argv)
     
     vector<double> x;
     vector<double> y;
-    for (double i =0.0; i< 10.0; i+=0.1)
+    for (double i =min(xi); i<= max(xi); i+=(max(xi)-min(xi))/10000.)
     {
         x.push_back(i);
-    }
-    
-    
+    }    
     
     for (auto x_val: x)
     {   
@@ -96,7 +94,4 @@ int main(int argc, char** argv)
     {
         fit_file << x[i] << "\t" << y[i] << endl;
     }
-    
-    cout << "min, max" << endl;
-    cout << min(xi) << "\t" << max(xi) << endl;
 }
