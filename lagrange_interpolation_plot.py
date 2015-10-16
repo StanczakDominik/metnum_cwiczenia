@@ -1,23 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-points = np.loadtxt("lagrange_interpolation_dane")
-fit = np.loadtxt("lagrange_interpolation_fit")
+data_sets = (("lagrange_interpolation_dane", "go", "Dane"),
+             ("lagrange_interpolation_fit", "b-", "Lagrange"),
+             ("neville_interpolation_fit", "r-", "Neville"))
 
-points_x = points[:,0]
-points_y = points[:,1]
+for data_set, format_string, label_string in data_sets:
+    data = np.loadtxt(data_set)
+    data_x = data[:,0]
+    data_y = data[:,1]
 
-fit_x = fit[:,0]
-fit_y = fit[:,1]
-
-plt.plot(points_x, points_y, "bo", label = "Data")
-plt.plot(fit_x, fit_y, "g-.", lw=5, label = "Lagrange")
-
-fit = np.loadtxt("neville_interpolation_fit")
-fit_x = fit[:,0]
-fit_y = fit[:,1]
-plt.plot(fit_x, fit_y, "r--", lw=5, label = "Neville")
-
+    plt.plot(data_x, data_y, format_string, label=label_string)
+plt.title("TOTALLY GNUPLOT")
 plt.grid()
 plt.legend()
 plt.show()
