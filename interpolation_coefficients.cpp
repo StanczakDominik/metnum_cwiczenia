@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <cmath>
+#include <string>
 
 using namespace std;
 
@@ -97,7 +98,7 @@ vector<double> polynomial_coefficients(vector<double>& xi, vector<double>& yi)
         y_temp.erase(y_temp.begin()+min_index);        
     }
     return ci;
-} 
+}
 
 int main(int argc, char** argv)
 {
@@ -109,5 +110,16 @@ int main(int argc, char** argv)
     load_data(argv[1], xi, yi);
     
     vector<double> ci = polynomial_coefficients(xi, yi);
+    
+    
+    for (unsigned i=0; i<ci.size(); i++)
+    {
+        if(i>0)
+        {
+            cout<< " + ";
+        }
+        cout << ci[i] << "*x**"<<i;
+    }
+    cout<<endl;
     
 }
