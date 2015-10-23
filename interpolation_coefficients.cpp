@@ -6,6 +6,7 @@
 
 using namespace std;
 
+//Neville
 double L(double x_val, vector<double>& xi, vector<double>& yi)
 {
     vector<double> P = yi;
@@ -74,6 +75,30 @@ double max(vector<double> x)
     }
     return result;
 }
+
+vector<double> polynomial_coefficients(vector<double>& xi, vector<double>& yi)
+{
+    vector<double> ci;
+    
+    unsigned N = xi.size();
+    vector<double> x_temp = xi;
+    vector<double> y_temp = yi;
+    // GAUSSIAN ELIMINATION
+    for (unsigned i=0; i<N; ++i)
+    {
+        double c = L(0,x_temp, y_temp);
+        ci.push_back(c);
+        for (unsigned j=0; j<y_temp.size(); j++)
+        {
+            y_temp[j]=(y_temp[j]-c)/(x_temp[j]);
+        }
+        unsigned min_index = min_abs_index(x_temp);
+        x_temp.erase(x_temp.begin()+min_index);
+        y_temp.erase(y_temp.begin()+min_index);        
+    }
+    return ci;
+} 
+
 int main(int argc, char** argv)
 {
     cout << setiosflags(ios::fixed) << setprecision(12) << endl;
@@ -83,15 +108,6 @@ int main(int argc, char** argv)
     
     load_data(argv[1], xi, yi);
     
-    vector<double> ci;
-    
-    double c0 = L(0, xi, yi);
-    ci.push_back(c0);
-    
-    for (unsigned i=0; i<xi.size(); ++i)
-    {
-        unsigned min_index = min_abs_index();
-              
-    }
+    vector<double> ci = polynomial_coefficients(xi, yi);
     
 }
