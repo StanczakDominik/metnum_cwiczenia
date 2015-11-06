@@ -1,17 +1,24 @@
 #include <cmath>
 #include <iostream>
 #include <iomanip>
+#include <cstdlib>
+#include <ctime>
+//#include <stdlib.h>     /* srand, rand */
+//#include <time.h>       /* time */
 using namespace std;
 
 double a = 0.;
-//double b=1.;
+double b=1.;
+double analytical = double(1)/double(3);
 //double analytical=(b-a)*(b-a)/2.;
-double b = 2.*M_PI;
-double analytical = -b;
+//double b = 2.*M_PI;
+//double analytical = -b;
 
 double f(double x)
 {
-	return x*sin(x);
+	return x*x;
+	//return x*sin(x);
+
 }
 
 double integrate_trapezoidal(double a, double b, double h)  //TRAPEZY SA BE
@@ -71,12 +78,49 @@ double integrate_boole(double a, double b, double h)
     return sum*h/90.;
 }
 
+double random_interval(double a, double b)
+{
+	int really_large_int = 1000000000;
+	return a + (rand() % really_large_int)/double(really_large_int) *(b-a);
+}
+double integrate_monte_carlo(double a, double b, double N, double min_func, double max_func)
+{
+	//cout << b-a << " " << max_func-min_func << endl;
+	double result = (b-a)*(max_func-min_func);
+	int counter = 0;
+
+	for(int i=0; i<N; ++i)
+	{
+		double x = random_interval(a,b);
+		double y = random_interval(min_func,max_func);
+
+		double fx = f(x);
+		if (fx > y && fx > 0)
+		{
+			counter++;
+		}
+		else if (fx < y && fx < 0)
+		{
+			counter--;
+		}
+	}
+	result *= double(counter/N);
+	return result;
+}
+
 int main()
-{   cout << setiosflags(ios::fixed) << setprecision(12) << endl;
-    for (int i=0; i<8; i++)
+{   
+	srand(time(NULL));
+	cout << setiosflags(ios::fixed) << setprecision(12) << endl;
+	cout << "n\th\t\trect\t\ttrap\t\tsimp\t\tbool\t\tmc"<<endl;
+    for (int i=1; i<7; i++)
     {
         int n = pow(10,i);
         double h = (b-a)/double(n);
-	    cout << h << "\t" << integrate_rectangular(a,b,h) << "\t" << integrate_trapezoidal(a,b,h) << "\t" << integrate_simpson(a,b,h) << "\t" << integrate_boole(a,b,h) << "\t" << integrate_rectangular_correction(a,b,h) << endl;
+		double monte_carlo_integration = integrate_monte_carlo(a,b,n,f(a),f(b));
+	    cout << n << "\t" << h << "\t" << integrate_rectangular(a,b,h) <<  "\t" << integrate_trapezoidal(a,b,h) << "\t" << integrate_simpson(a,b,h) << "\t" << integrate_boole(a,b,h) << "\t" << monte_carlo_integration <<  endl;
+	    cout << n << "\t" << h << "\t" << integrate_rectangular(a,b,h)-analytical << "\t" << integrate_trapezoidal(a,b,h)-analytical << "\t" << integrate_simpson(a,b,h)-analytical << "\t" << integrate_boole(a,b,h)-analytical << "\t" << monte_carlo_integration - analytical << endl;
+	    cout << n << "\t" << h << "\t" << (integrate_rectangular(a,b,h)-analytical)/analytical << "\t" << (integrate_trapezoidal(a,b,h)-analytical)/analytical << "\t" << (integrate_simpson(a,b,h)-analytical)/analytical << "\t" << (integrate_boole(a,b,h)-analytical)/analytical << "\t" << (monte_carlo_integration - analytical)/analytical << endl;
+		cout << endl;
 	}
 }
