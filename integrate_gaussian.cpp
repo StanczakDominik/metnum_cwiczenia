@@ -8,16 +8,15 @@
 using namespace std;
 
 double a = 0.;
-//double b=1.;
-//double analytical = double(1)/double(3);
+double b=1.;
+double analytical = double(1)/double(3);
 //double analytical=(b-a)*(b-a)/2.;
-double b = 2.*M_PI;
-double analytical = -b;
+//double b = 2.*M_PI;
+//double analytical = -b;
 
 double f(double x)
 {
-	//return x*x;
-	return x*sin(x);
+	return exp(-0.5*x*x)/sqrt(2.*M_PI);
 
 }
 
@@ -95,11 +94,11 @@ double integrate_monte_carlo(double a, double b, double N, double min_func, doub
 		double y = random_interval(min_func,max_func);
 
 		double fx = f(x);
-		if ((fx > 0) && (fx > y))
+		if (fx > y && fx > 0)
 		{
 			counter++;
 		}
-		if ((fx < 0) && (fx < y))
+		else if (fx < y && fx < 0)
 		{
 			counter--;
 		}
@@ -108,19 +107,24 @@ double integrate_monte_carlo(double a, double b, double N, double min_func, doub
 	return result;
 }
 
-int main()
+double gaussian_distribuant(double a, double x, double h)
+{
+	return integrate_boole(a,x,h);
+}
+
+int main(int argc, char** argv)
 {   
-	srand(time(NULL));
-	cout << setiosflags(ios::fixed) << setprecision(12) << endl;
-	cout << "n\th\t\trect\t\ttrap\t\tsimp\t\tbool\t\tmc"<<endl;
-    for (int i=1; i<7; i++)
-    {
-        int n = pow(10,i);
-        double h = (b-a)/double(n);
-		double monte_carlo_integration = integrate_monte_carlo(a,b,n,-5,2);
-	    cout << n << "\t" << h << "\t" << integrate_rectangular(a,b,h) <<  "\t" << integrate_trapezoidal(a,b,h) << "\t" << integrate_simpson(a,b,h) << "\t" << integrate_boole(a,b,h) << "\t" << monte_carlo_integration <<  endl;
-	    cout << n << "\t" << h << "\t" << integrate_rectangular(a,b,h)-analytical << "\t" << integrate_trapezoidal(a,b,h)-analytical << "\t" << integrate_simpson(a,b,h)-analytical << "\t" << integrate_boole(a,b,h)-analytical << "\t" << monte_carlo_integration - analytical << endl;
-	    cout << n << "\t" << h << "\t" << (integrate_rectangular(a,b,h)-analytical)/analytical << "\t" << (integrate_trapezoidal(a,b,h)-analytical)/analytical << "\t" << (integrate_simpson(a,b,h)-analytical)/analytical << "\t" << (integrate_boole(a,b,h)-analytical)/analytical << "\t" << (monte_carlo_integration - analytical)/analytical << endl;
-		cout << endl;
+	double a=-100;
+	if(argc < 2)
+	{
+		cout << "Podaj z" << endl;
+		exit(1);
 	}
+	double z = atof(argv[1]);
+	if(z<a)
+	{
+		cout << "Zbyt maly z. Wyjdzie 0" << endl;
+		exit(1);
+	}
+	cout << gaussian_distribuant(a,z,0.01) << endl;
 }
