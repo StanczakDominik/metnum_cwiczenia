@@ -114,6 +114,7 @@ double gaussian_distribuant(double a, double x, double h)
 
 int main(int argc, char** argv)
 {   
+	cout << setiosflags(ios::fixed) << setprecision(12) << endl;
 	double a=-100;
 	if(argc < 2)
 	{
