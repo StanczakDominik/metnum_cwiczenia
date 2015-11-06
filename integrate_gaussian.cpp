@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 	{
 		cout << "Podaj z" << endl;
 		exit(1);
-	}
+	} //bujak
 	double z = atof(argv[1]);
 	if(z<a)
 	{
