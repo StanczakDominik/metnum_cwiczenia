@@ -80,8 +80,7 @@ double integrate_boole(double a, double b, double h)
 
 double random_interval(double a, double b)
 {
-	int really_large_int = 1000000000;
-	return a + (rand() % really_large_int)/double(really_large_int) *(b-a);
+	return a + (b-a)*(double)rand()/static_cast<double>(RAND_MAX);
 }
 double integrate_monte_carlo(double a, double b, double N, double min_func, double max_func)
 {
@@ -95,17 +94,32 @@ double integrate_monte_carlo(double a, double b, double N, double min_func, doub
 		double y = random_interval(min_func,max_func);
 
 		double fx = f(x);
-		if ((fx > 0) && (fx > y))
+		if ((fx > 0) && (fx > y) && (y>0))
 		{
 			counter++;
 		}
-		if ((fx < 0) && (fx < y))
+		else if ((fx < 0) && (y<0) && (fx < y))
 		{
 			counter--;
 		}
 	}
-	result *= double(counter/N);
+	result *= double(counter)/double(N);
 	return result;
+}
+
+// wersja oficjalna
+double integrate_monte_carlo2(double x0, double x1, double n, double y0, double y1)
+{
+    int hits=0;
+    for(int i=0; i<n; ++i)
+    {
+        double x = random_interval(x0, x1);
+        double y = random_interval(y0, y1);
+        double z = f(x);
+        if (z>0 && y > 0 && y < z) hits++;
+        else if (z<0 && y < 0 && y > z) hits--;
+    }
+    return (double)hits / (double)n * (x1-x0) * (y1-y0);
 }
 
 int main()
@@ -113,7 +127,7 @@ int main()
 	srand(time(NULL));
 	cout << setiosflags(ios::fixed) << setprecision(12) << endl;
 	cout << "n\th\t\trect\t\ttrap\t\tsimp\t\tbool\t\tmc"<<endl;
-    for (int i=1; i<7; i++)
+    for (int i=1; i<8; i++)
     {
         int n = pow(10,i);
         double h = (b-a)/double(n);
