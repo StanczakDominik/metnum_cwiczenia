@@ -26,8 +26,7 @@ vector<unsigned int> histogram(vector<int> dane, unsigned int N, int x_min = 0, 
     unsigned int N_dane = dane.size();
     for (unsigned int i=0; i<N_dane; i++)
     {
-        int dana = dane.at(i);
-        int dana_bin = (int)(dana/dx);
+        int dana_bin = (int)(dane.at(i)/dx);
         v.at(dana_bin)++;
     }
 
@@ -47,4 +46,8 @@ int main()
     {
         cout << val << endl;
     }
+    
+    int i = 0;
+    
+    for (int i = 3;i<15;i*=2
 }

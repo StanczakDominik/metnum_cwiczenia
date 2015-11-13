@@ -11,13 +11,13 @@ def rng(n):
         x = (a*x+c) % m
         yield x
 
-N=100000
+N=1000000
 
 y = [x for x in rng(N)]
 x = range(N)
 
-plt.hist(y, bins=1000, color=None, alpha=1, edgecolor=None)
+plt.hist(y, bins=10000, color=None, alpha=1, edgecolor='none')
 plt.show()
 
-for i, random_variable in enumerate(y):
-    print(i, random_variable)
+#for i, random_variable in enumerate(y):
+#    print(i, random_variable)
