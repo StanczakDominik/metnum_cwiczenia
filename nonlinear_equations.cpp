@@ -8,18 +8,12 @@ double epsilon = pow(10,-12);
 
 double f(double x)
 {
-    return x*x*x-8;
+    return sin(x+cos(x))-cos(x+sin(x));
 }
 double fprime(double x)
 {
-    return 3.0*x*x;
+    return (1-sin(x))*cos(x+cos(x))+sin(x+sin(x))*(cos(x)+1);
 }
-
-
-
-
-
-
 
 double bisection(double a, double b)
 {
@@ -156,6 +150,7 @@ double tangents(double x, double xprev)
 	        xprev = x;
 	    }
 	}
+	cout << i << endl;
 	return x;
 }
 
@@ -173,7 +168,7 @@ double git_dekker(double a, double b, double eps)
         double m = (a+b) / 2.0;
         double b2 = m;
         
-        cout << licznik << ": " << a << " " << b << " " << s << " " << m << endl;
+        //cout << licznik << ": " << a << " " << b << " " << s << " " << m << endl;
         
         if( (b < s && s < m) || (b > s && s > m))
         {
@@ -246,7 +241,7 @@ double dekker(double a, double b)
         }
 
         
-        printf("i%4d a%8.4f b %7.4f s %7.4f m %7.4f interp %d bsm %d \n", iteracja, a, b, s, m, czy_idzie_interpolacja, czy_b_s_m);
+        //printf("i%4d a%8.4f b %7.4f s %7.4f m %7.4f interp %d bsm %d \n", iteracja, a, b, s, m, czy_idzie_interpolacja, czy_b_s_m);
         //cout << iteracja << "\t" << a << "\t" << b << "\t" << s << "\t" << m << "\t" << czy_idzie_interpolacja << "\t" << czy_b_s_m << endl;
         
         double fbnew = f(bnew);
@@ -268,25 +263,25 @@ double dekker(double a, double b)
             b = c;
         }
     }
-    cout << iteracja << endl;
+    //cout << iteracja << endl;
     return b;
 }
 
     
 int main()
 {   
-    double a = -1.0;
-    double b = 2.0;
+    double a = 0;
+    double b = 2.5;
     cout << "Bisekcja" << endl;
-    cout << bisection(0,5) << endl;
-    //cout << "\n\n\nFalsi" << endl;
-    //cout << falsi(a,b) << endl;
-   // cout << "\n\n\nNewton" << endl;
-    //cout << newton((a+b)/2.0) << endl;
-    //cout << "\n\n\nTangensy" << endl;
-    //cout << tangents((a+b)/2.0, (a+b)/3.0) << endl;
+    cout << bisection(a,b) << endl;
+    cout << "\n\n\nFalsi" << endl;
+    cout << falsi(a,b) << endl;
+    cout << "\n\n\nNewton" << endl;
+    cout << newton(1) << endl;
+    cout << "\n\n\nTangensy" << endl;
+    cout << tangents((a+b)/2.0, (a+b)/3.0) << endl;
     //cout << "\n\n\nBrent" << endl;
     //cout << brent(a, b) << endl;
-    cout << gitdekker(0,5) << endl;
-    cout << dekker(0,5) << endl;
+    cout << git_dekker(a,b, epsilon) << endl;
+    //cout << dekker(0,5) << endl;
 }
