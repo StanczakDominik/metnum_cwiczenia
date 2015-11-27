@@ -5,19 +5,22 @@ using namespace std;
 
 double epsilon = pow(10,-12);
 
-double mimosrod_ziemia = 0.0167;
-double mimosrod_merkury = 0.2056;
-
-
 
 double f(double x)
 {
-	return x*x*x*x-5.;
+    return x*x*x-8;
 }
 double fprime(double x)
 {
-    return 2.0*x;
+    return 3.0*x*x;
 }
+
+
+
+
+
+
+
 double bisection(double a, double b)
 {
     unsigned i = 0;
@@ -55,6 +58,12 @@ double bisection(double a, double b)
 	        //b = b;
 	    }
 	}
+}
+
+bool sign(double a)
+{
+    if (a >=0) return true;
+    else return false;
 }
 
 double falsi(double a, double b)
@@ -130,113 +139,154 @@ double newton(double x)
 double tangents(double x, double xprev)
 {
     unsigned i = 0;
-	while(true)
+    double fx = f(x);
+	while(abs(fx) > epsilon)
 	{
-	    i++;
-	    double fx = f(x);
-	    double fp = f(xprev);
 	    cout << i << "\t" << x << "\t" << fabs(fx) << endl;
-	    if (fabs(fx)<epsilon)
-	    {
-	        cout << "Iteracje: " << i << endl;
-	        return x;
-	    }
-	    x -= fx*(x-xprev)/(fx-fp);
-	    if(i>100000)
-	    {
-	        cout << "Chyba nie zbiega." << endl;
-	        return 0    ;
-	    }
-	}
-}
-
-
-double brent(double a, double b)
-{
-    unsigned i = 0;
-    double fa = f(a);
-    double fb = f(b);
-    double s;
-    double fs;
-    double d;
-    bool a_sign = signbit(f(a));
-    bool b_sign = signbit(f(b));
-    if(a_sign==b_sign)
-	{
-	    cout << fa << "\t" << fb << endl;
-	    cout << "Zle warunki poczatkowe" << endl;
-	    return 0;
-	}
-	if (abs(fa) < abs(fb))
-	{
-	    double swap_b = b;
-	    b = a;
-	    a = swap_b;
-	}
-    double c = a;
-    
-    bool mflag = true;
-	do
-	{
 	    i++;
-	    fa = f(a);
-	    fb = f(b);
-	    double fc = f(c);
-	    if ((abs(fa-fc)>epsilon) and (abs(fb-fc) > epsilon))
+	    double fp = f(xprev);
+	    if(abs(fx-fp) < epsilon)
 	    {
-	        cout << "inverse quadratic" << endl;
-	        double s = a*fb*fc/((fa-fb)*(fa-fc)) + b*fa*fc/((fb-fa)*(fb-fc))+c*fa*fb/((fc-fa)*(fc-fb));
+	        return x;
 	    }
 	    else
 	    {
-	        cout << "bisekcja" << endl;
-	        double s = b - fb*(b-a)/(fb-fa);
+	        x -= fx*(x-xprev)/(fx-fp);
+	        fx = f(x);
+	        xprev = x;
 	    }
-	    cout << s << endl;
-	    
-	    if (
-	        (not ( (s > (3.*a+b)/4.) and (s < b) ))
-	        or (mflag and (abs(s-b) >= abs(b-c)/2.))
-	        or ((not mflag) and abs(s-b) >= abs(c-d)/2.0)
-	        or (mflag and (abs(b-c) < epsilon))
-	        or ((not mflag) and (abs(c-d)<epsilon))
-	        )
-	    {
-	        double s = (a+b)/2.0;
-	        mflag = true;
-	    }
-	    else mflag = false;
-	    
-	    double fs = f(s);
-	    double d = c;
-	    c = b;
-	    if (fa*fs < 0) b = s;
-	    else a = s;
-	    if (abs(fa) < abs(fb))
-	    {
-	        double swap_b = b;
-	        b = a;
-	        a = swap_b;
-	    }
-	    cout << i << "\t" << s << "\t" << fabs(fs) << endl;
-	    cout << a << "\t" << b << "\t" << fa << "\t" << fb << endl;
 	}
-	while((abs(fb)>epsilon) and (abs(fs)>epsilon) and (abs(b-a)>epsilon));
-	return b;
+	return x;
 }
+
+double git_dekker(double a, double b, double eps)
+{
+    int licznik = 0;
+    while(fabs(b-a) > epsilon)
+    {
+        licznik ++;
+        if(fabs(f(b)) < eps)
+        {
+            return b;
+        }
+        double s = b - (b - a) / (f(b) - f(a)) * f(b);
+        double m = (a+b) / 2.0;
+        double b2 = m;
+        
+        cout << licznik << ": " << a << " " << b << " " << s << " " << m << endl;
+        
+        if( (b < s && s < m) || (b > s && s > m))
+        {
+            b2 = s;
+        }
+        
+        if(sign(f(b2)) == sign(f(b)))
+        {
+            b = b2;
+        }
+        else
+        {
+            a = b2;
+        }
+        if (fabs(f(a)) < fabs(f(b)))
+        {
+            double c = a;
+            a = b;
+            b = c;
+        }
+    }
+    return b;
+}    
+
+double dekker(double a, double b)
+{
+    double fa = f(a);
+    double fb = f(b);
+    double bnew = 0;
+    double s = 0;
+    if (fa*fb>0)
+    {
+        cout << "Zle warunki poczatkowe" << endl;
+        cout << "f(a): " << fa << endl;
+        cout << "f(b): " << fb << endl;
+        return 0;
+    }    
+    double bprev = a;
+    
+    unsigned int iteracja = 0;
+    bool czy_idzie_interpolacja = true;
+    bool czy_b_s_m = true;
+    
+    while(abs(fb)>epsilon and iteracja < 100)
+    {
+        iteracja++;
+        double fbprev = f(bprev);
+        double m = (a+b)/2.0;
+        if (abs(fb - fbprev) > epsilon) // f(bk) != f(bk-1)
+        {
+            czy_idzie_interpolacja = true;
+            s = b - (b-bprev)/(fb-fbprev)*fb;
+        }
+        else
+        {
+            czy_idzie_interpolacja = false;
+            s = m;
+        }
+        
+        
+        if (b < s and s < m)
+        {
+            czy_b_s_m = true;
+            bnew = s;
+        }
+        else
+        {
+            czy_b_s_m = false;
+            bnew = m;
+        }
+
+        
+        printf("i%4d a%8.4f b %7.4f s %7.4f m %7.4f interp %d bsm %d \n", iteracja, a, b, s, m, czy_idzie_interpolacja, czy_b_s_m);
+        //cout << iteracja << "\t" << a << "\t" << b << "\t" << s << "\t" << m << "\t" << czy_idzie_interpolacja << "\t" << czy_b_s_m << endl;
+        
+        double fbnew = f(bnew);
+        
+        if (fa*fbnew>0) //ten sam znak
+        {
+            a = b;      //bk zamiast bk+1
+            fa = fb;
+        }
+        b = bnew;
+        fb = fbnew;        
+        
+        //nadpisanie b na bnew?
+        
+        if (abs(fa)<abs(fb))
+        {
+            double c = a;
+            a = b;
+            b = c;
+        }
+    }
+    cout << iteracja << endl;
+    return b;
+}
+
     
 int main()
 {   
-    double a = 0.0;
-    double b = 10.0;
-    //cout << "Bisekcja" << endl;
-    //cout << bisection(a,b) << endl;
+    double a = -1.0;
+    double b = 2.0;
+    cout << "Bisekcja" << endl;
+    cout << bisection(0,5) << endl;
     //cout << "\n\n\nFalsi" << endl;
     //cout << falsi(a,b) << endl;
-    //cout << "\n\n\nNewton" << endl;
+   // cout << "\n\n\nNewton" << endl;
     //cout << newton((a+b)/2.0) << endl;
     //cout << "\n\n\nTangensy" << endl;
     //cout << tangents((a+b)/2.0, (a+b)/3.0) << endl;
-    cout << "\n\n\nBrent" << endl;
-    cout << brent(a, b) << endl;
+    //cout << "\n\n\nBrent" << endl;
+    //cout << brent(a, b) << endl;
+    cout << gitdekker(0,5) << endl;
+    cout << dekker(0,5) << endl;
 }

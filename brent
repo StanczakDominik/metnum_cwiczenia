@@ -1,0 +1,74 @@
+double brent(double a, double b)
+{
+    unsigned i = 0;
+    double fa = f(a);
+    double fb = f(b);
+    double s = 0;
+    double fs = 0;
+    double d = 0;
+    bool a_sign = signbit(f(a));
+    bool b_sign = signbit(f(b));
+    if(a_sign==b_sign)
+	{
+	    cout << fa << "\t" << fb << endl;
+	    cout << "Zle warunki poczatkowe" << endl;
+	    return 0;
+	}
+	if (abs(fa) < abs(fb))
+	{
+	    double swap_b = b;
+	    b = a;
+	    a = swap_b;
+	}
+	cout << a << b << endl;
+    double c = a;
+    
+    bool mflag = true;
+	do
+	{
+	    i++;
+	    fa = f(a);
+	    fb = f(b);
+	    double fc = f(c);
+	    if ((abs(fa-fc)>epsilon) and (abs(fb-fc) > epsilon))
+	    {
+	        cout << "inverse quadratic" << endl;
+	        double s = a*fb*fc/((fa-fb)*(fa-fc)) + b*fa*fc/((fb-fa)*(fb-fc))+c*fa*fb/((fc-fa)*(fc-fb));
+	    }
+	    else
+	    {
+	        cout << "bisekcja" << endl;
+	        double s = b - fb*(b-a)/(fb-fa);
+	    }
+	    cout << s << endl;
+	    
+	    if (
+	        (not ( (s > (3.*a+b)/4.) and (s < b) ))
+	        or (mflag and (abs(s-b) >= abs(b-c)/2.))
+	        or ((not mflag) and abs(s-b) >= abs(c-d)/2.0)
+	        or (mflag and (abs(b-c) < epsilon))
+	        or ((not mflag) and (abs(c-d)<epsilon))
+	        )
+	    {
+	        double s = (a+b)/2.0;
+	        mflag = true;
+	    }
+	    else mflag = false;
+	    
+	    double fs = f(s);
+	    double d = c;
+	    c = b;
+	    if (fa*fs < 0) b = s;
+	    else a = s;
+	    if (abs(fa) < abs(fb))
+	    {
+	        double swap_b = b;
+	        b = a;
+	        a = swap_b;
+	    }
+	    cout << i << "\t" << s << "\t" << fabs(fs) << endl;
+	    cout << a << "\t" << b << "\t" << fa << "\t" << fb << endl;
+	}
+	while((abs(fb)>epsilon) and (abs(fs)>epsilon) and (abs(b-a)>epsilon));
+	return b;
+}
