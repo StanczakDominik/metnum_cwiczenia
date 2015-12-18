@@ -36,7 +36,7 @@ void print_vector(vector<int> A)
 }
 void print_vector_part(vector<int> A, int left, int right)
 {
-    for (unsigned i=left; i<=right; i++)
+    for (int i=left; i<=right; i++)
     {
         cout << A.at(i) << " ";
     }
@@ -115,7 +115,7 @@ vector<int> cocktailSort(vector<int> A)
         //cout << endl;
         print_vector(A);
         any_have_moved = false;
-        for (int j = i; j< N - i - 1; j++)
+        for (unsigned j = i; j< N - i - 1; j++)
         {
             //print_vector(A);	
             if(A.at(j) > A.at(j+1))
@@ -180,22 +180,22 @@ void quickSort(vector<int> &A, int left, int right)
 }
 
 
-void print_heap(vector<int> A)
+void print_heap(vector<int>& A)
 {
+
+
+
     int N = A.size();
     int levels = log(N+1)/log(2); //do iteracji
     int i = 0;
     int level = 0;
+    
     while(level < levels)
     {
         int j = i;
         int on_this_level = pow(2,level);
-        int spaces_this_level = levels - level-1;
-        //cout << spaces_this_level << endl;
         while(j<i+on_this_level)
         {
-            //for (int k=0; k<levels-level-1; k++)
-            //    printf("   ", k);
             printf("%3d", A.at(j));
             j++;
             
@@ -207,25 +207,71 @@ void print_heap(vector<int> A)
     
 }
 
-void downheap(vector<int> A, int i)
+void downheap(vector<int>& A, int i, int j)
 {
-	while(true)
+    int elem = A[i];
+	int k = 2*i+1;
+	while(k<=j+1)
 	{
-	    int k = 2*i+1;
 	    if (A[k+1] > A[k])
 	    {
-	        return;
+	        k++;
 	    }
+	    
+	    if(A[k] > A[i])
+	    {
+	        swap(A[i], A[k]);
+	    }
+	    i = k;
+	    k = 2*i+1;
+	    print_heap(A);
 	}
+	cout << i << endl;
+	//A[i] = elem;
+	print_heap(A);
+}
+
+
+
+void move_down(vector<int>& A, int start, int end)
+{
+    int current = start;
+    while(2*current+1 <= end)
+    {
+        int child_l = 2*current+1;
+        int child_r = 2*current+2;
+        
+        int flip = current; 
+        if(A[child_l] > A[current])
+        {
+            flip = child_l;
+        }
+        if ((child_r <= end) && A[child_r] > A[flip])
+            flip = child_r;
+        if (current != flip)
+        {
+            swap(A[current], A[flip]);
+            current = flip;
+        }
+        else
+            break;
+    }
 }
 
 vector<int> heapSort(vector<int> A);
 
 int main()
 {
-    vector<int> A = negatively_sorted_vector(31);////{0, 1, 1, 3, 2, 5, 1};//
+    vector<int> A = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};//negatively_sorted_vector(31);////{0, 1, 1, 3, 2, 5, 1};//
     print_vector(A);
     print_heap(A);
+    int j = 14;
+    for (int i = (15-2)/2; i>=0; i--)
+    {
+        move_down(A, i, j);
+        print_heap(A);
+        //j--;
+    }
     //selectionSort(A);
     //bubbleSort(A);
     //print_vector(selectionSort(A));
