@@ -1,5 +1,19 @@
 4 3 1 8 5 7 2 6
-        5
 1. choose pivot
+        5
+recur
+{
+	2. pointers from both sides
+	for()
+	{
+		i->	     <-j
 
-
+		      8     2
+			swap
+		i->	     <-j
+		if(j<i)
+			break
+	}
+	recur(left)
+	recur(right)
+}
