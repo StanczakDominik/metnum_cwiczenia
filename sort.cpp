@@ -194,8 +194,8 @@ void print_heap(vector<int> A)
         //cout << spaces_this_level << endl;
         while(j<i+on_this_level)
         {
-            for (int k=N/2; k>0 k/=2)
-                printf("   ");
+            //for (int k=0; k<levels-level-1; k++)
+            //    printf("   ", k);
             printf("%3d", A.at(j));
             j++;
             
