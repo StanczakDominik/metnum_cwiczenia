@@ -272,6 +272,13 @@ int main()
         print_heap(A);
         //j--;
     }
+    
+    for (int i =1; i<15; ++i)
+    {
+        swap(A[0], A[15-i]);
+        move_down(A, 0, 14-i);
+    }
+    print_vector(A);
     //selectionSort(A);
     //bubbleSort(A);
     //print_vector(selectionSort(A));
