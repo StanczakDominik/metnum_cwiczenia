@@ -2,6 +2,7 @@
 #include <vector>
 #include <climits>
 #include <ctime>
+#include <cmath>
 using namespace std;
 
 vector<int> random_vector(unsigned n)
@@ -178,12 +179,49 @@ void quickSort(vector<int> &A, int left, int right)
         quickSort(A, i, right);	
 }
 
+
+void print_heap(vector<int> A)
+{
+    int N = A.size();
+    int levels = log(N+1)/log(2); //do iteracji
+    cout << levels << endl << endl;
+    int i = 0;
+    int level = 0;
+    while(level < levels)
+    {
+        int j = i;
+        int on_this_level = pow(2,level);
+        while(j<i+on_this_level)
+        {
+            printf("%3d", A.at(j));
+            j++;
+        }
+        cout << endl;
+        i=j;
+        level++;
+    }
+    
+}
+
+void downheap(vector<int> A, int i)
+{
+	while(true)
+	{
+	    int k = 2*i+1;
+	    if (A[k+1] > A[k])
+	    {
+	        return;
+	    }
+	}
+}
+
 vector<int> heapSort(vector<int> A);
 
 int main()
 {
-    vector<int> A = {0, 1, 1, 3, 2, 5, 1};//negatively_sorted_vector(10);//
+    vector<int> A = negatively_sorted_vector(15);////{0, 1, 1, 3, 2, 5, 1};//
     print_vector(A);
+    print_heap(A);
     //selectionSort(A);
     //bubbleSort(A);
     //print_vector(selectionSort(A));
@@ -192,8 +230,8 @@ int main()
     //print_vector(bubbleSort(A));
     //cout << "cocktailsort" << endl;
     //print_vector(cocktailSort(A));
-    cout << "quickSort" << endl;
-    quickSort(A, 0, A.size()-1);
-    print_vector(A);
+    //cout << "quickSort" << endl;
+   // quickSort(A, 0, A.size()-1);
+    //print_vector(A);
     //sort(A);
 }
