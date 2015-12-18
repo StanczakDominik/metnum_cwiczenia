@@ -184,17 +184,21 @@ void print_heap(vector<int> A)
 {
     int N = A.size();
     int levels = log(N+1)/log(2); //do iteracji
-    cout << levels << endl << endl;
     int i = 0;
     int level = 0;
     while(level < levels)
     {
         int j = i;
         int on_this_level = pow(2,level);
+        int spaces_this_level = levels - level-1;
+        //cout << spaces_this_level << endl;
         while(j<i+on_this_level)
         {
+            for (int k=0; k<levels-level-1; k++)
+                printf("   ");
             printf("%3d", A.at(j));
             j++;
+            
         }
         cout << endl;
         i=j;
@@ -219,7 +223,7 @@ vector<int> heapSort(vector<int> A);
 
 int main()
 {
-    vector<int> A = negatively_sorted_vector(15);////{0, 1, 1, 3, 2, 5, 1};//
+    vector<int> A = negatively_sorted_vector(31);////{0, 1, 1, 3, 2, 5, 1};//
     print_vector(A);
     print_heap(A);
     //selectionSort(A);
