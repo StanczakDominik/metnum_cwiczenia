@@ -1,8 +1,58 @@
 #include <iostream>
 using namespace std;
+#include <stdio.h>
+#include <cmath>
+
+vector<double> f (double t, vector<double> x)
+{
+    
+    return -x;
+}
+
+vector<double> Euler(double t, double x, double dt)
+{
+    return x + dt*f(t, x);
+}
+vector<double ModifiedEuler(double t, double x, double dt)
+{
+    double xhalf = Euler(t, x, dt/2.);
+    return x + dt*f(t+dt/2., xhalf);
+}
+
+double RK4(double t, double x, double dt)
+{
+    double K1 = f(t, x);
+    double K2 = f(t+dt/2., x + dt*K1/2.);
+    double K3 = f(t+dt/2., x + dt*K2/2.);
+    double K4 = f(t+dt, x + dt*K3);
+    return x + dt/6.*(K1+2*K2+2*K3+K4);
+}
 
 int main()
 {
-    cout << "boo" << endl;
-
+    int NPoints = 1000;
+    double a = 0;
+    double b = 10;
+    double N0 = 1000;
+    double dt = (b-a)/double(NPoints);
+    double *N_exact = new double(NPoints);
+    double *N = new double(NPoints);
+    double *Nmodified = new double(NPoints);
+    double *NRK = new double(NPoints);
+    double *t = new double(NPoints);
+    N[0] = N0;
+    Nmodified[0] = N0;
+    NRK[0] = N0;
+    N_exact[0]=N0;
+    t[0] = a;
+    printf("%.8f %.8f %.8f %.8f %.8f\n", t[0], N[0], Nmodified[0], NRK[0], N_exact[0]);
+    for (int i=1;i<NPoints; ++i)
+    {
+        t[i] = t[i-1] + dt;
+        N_exact[i]=N_exact[0]*exp(-t[i]);
+        N[i] = Euler(t[i-1], N[i-1], dt);
+        Nmodified[i] = ModifiedEuler(t[i-1], Nmodified[i-1], dt);
+        NRK[i] = RK4(t[i-1], NRK[i-1], dt);
+        printf("%.8f %.8f %.8f %.8f %.8f\n", t[i], N[i], Nmodified[i], NRK[i], N_exact[i]);
+    }
 }
